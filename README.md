@@ -1,0 +1,1 @@
+# FFXIV Gearing Discord Bot
