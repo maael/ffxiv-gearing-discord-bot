@@ -95,7 +95,7 @@ function getAvgILevel (o: Record<string, XIVAPI_ItemDetails>): number {
 }
 
 const actions = {
-  getGearset: async (msg: any) => {
+  getGearset: async (msg: Discord.Message) => {
     const parsed = parseMsg(msg.content);
     console.info('get_gearset', 'parsed', parsed);
     const reaction = await msg.react("🤔");
