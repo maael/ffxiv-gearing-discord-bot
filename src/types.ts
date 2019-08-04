@@ -1,3 +1,6 @@
+import {Message} from 'discord.js';
+import {Database} from 'sqlite';
+
 export interface XIVAPI_Character {
   ID: string,
   Name: string,
@@ -82,4 +85,15 @@ export enum Roles {
   'MELEE PHYSICAL DPS' = 'MELEE PHYSICAL DPS',
   'RANGED MAGIC DPS' = 'RANGED MAGIC DPS',
   'DPS' = 'DPS',
+}
+
+export interface ParsedMessage {
+  command: string;
+  data: Record<string, string>;
+}
+
+export interface Action {
+  perform: (db: Database, parsed: ParsedMessage, msg: Message) => Promise<void>;
+  command: string;
+  parseMessage: (prefix: string, incoming: Message) => ParsedMessage;
 }

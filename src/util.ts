@@ -1,8 +1,11 @@
+import {Client} from 'discord.js';
 import {EquipmentOrder, JobAbbreviations, Roles} from './types';
 
 const pixelWidth = require('string-pixel-width');
 
 export const wait = async (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+export const getEmoji = (client: Client, name: string) => client.emojis.find(emoji => emoji.name === name);
 
 export function wrapStringToLength (str: string, maxLength: number) {
   return str.split(' ').reduce((lines: string[], p) => {
