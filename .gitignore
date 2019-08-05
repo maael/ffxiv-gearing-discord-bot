@@ -88,3 +88,6 @@ typings/
 
 # Typescript Output
 lib/
+
+# sqlite db
+db.sql

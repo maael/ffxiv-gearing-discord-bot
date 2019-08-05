@@ -29,7 +29,7 @@ client.on('message', async (msg) => {
  */
 
 (async () => {
-  db = await sqlite.open(join(__dirname, '..', 'db.sql'));
+  db = await sqlite.open(join(__dirname, '..', 'data', 'db.sql'));
   await db.migrate({ force: DEBUG ? 'last' : undefined });
   await client.login(DISCORD_TOKEN);
 })();

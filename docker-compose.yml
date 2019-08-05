@@ -1,0 +1,18 @@
+version: '3'
+
+networks:
+  proxy:
+    external: true
+
+services:
+  ffxiv:
+    build: ./
+    restart: always
+    environment:
+      DISCORD_TOKEN: <TOKEN>
+    networks:
+      - proxy
+    volumes:
+      - ./data:/data
+    networks:
+      - proxy

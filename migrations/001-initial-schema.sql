@@ -16,6 +16,9 @@ CREATE TABLE TeamMember (
   ffxiv_server TEXT,
   ffxiv_character TEXT,
   ffxiv_class TEXT,
+  ffxiv_ilvl INTEGER,
+  created_at TEXT,
+  modified_at TEXT,
   CONSTRAINT TeamMember_fk_server_team_id FOREIGN KEY (server_team_id)
       REFERENCES ServerTeam (id) ON UPDATE CASCADE ON DELETE CASCADE
 );

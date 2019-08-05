@@ -18,12 +18,7 @@ export interface XIVAPI_CharacterDetails {
         Abbreviation: string;
       }
     }
-  }
-  Info: {
-    Character: {
-      Updated: number;
-      State: number;
-    }
+    ParseDate: number;
   }
 };
 
@@ -92,8 +87,8 @@ export interface ParsedMessage {
   data: Record<string, string>;
 }
 
-export interface Action {
-  perform: (db: Database, parsed: ParsedMessage, msg: Message) => Promise<void>;
+export interface Action <ReturnType = void> {
+  perform: (db: Database, parsed: ParsedMessage, msg: Message) => Promise<ReturnType>;
   command: string;
   parseMessage: (prefix: string, incoming: Message) => ParsedMessage;
 }

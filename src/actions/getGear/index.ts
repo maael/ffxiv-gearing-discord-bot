@@ -9,22 +9,23 @@ async function getCharacter (server: string, name: string): Promise<XIVAPI_Chara
   const u = new URL('https://xivapi.com/character/search');
   u.searchParams.set('name', name);
   u.searchParams.set('server', server);
-  const result = (await got.get(u.href, {json: true})).body.Results;
+  const body = (await got.get(u.href, {json: true})).body
   console.info('get_gearset', 'get_character', 'end', server, name);
-  return result.find(({Name, Server}: any) => Name === name && Server === server);
+  return body.Results.find(({Name, Server}: any) => Name === name && Server.startsWith(server));
 }
 
 async function safeCharacterGet(id: string): Promise<XIVAPI_CharacterDetails> {
   console.info('get_gearset', 'safe_get_character_details', 'start', id);
   const u = new URL(`https://xivapi.com/character/${id}?extended=1`);
-  const result = (await got.get(u.href, {json: true})).body;
-  if (result.Info.Character.State !== 2) {
-    console.info('get_gearset', 'safe_get_character_details', 'retry', id, result);
+  try {
+    const result = (await got.get(u.href, {json: true})).body;
+    console.info('get_gearset', 'safe_get_character_details', 'end', id, result.Character.ParseDate);
+    return result;
+  } catch (e) {
+    console.info('get_gearset', 'safe_get_character_details', 'retry', id);
     await wait(5000);
     return await safeCharacterGet(id);
   }
-  console.info('get_gearset', 'safe_get_character_details', 'end', id);
-  return result;
 }
 
 async function getCharacterDetails(id: string): Promise<{gear: Record<string, string>, job: string, updated: number}> {
@@ -34,7 +35,7 @@ async function getCharacterDetails(id: string): Promise<{gear: Record<string, st
   return {
     gear: Object.entries(result.Character.GearSet.Gear).reduce((ob, [p, g]) => ({...ob, [p]: g.Item.ID}), {}),
     job: result.Character.ActiveClassJob.Job.Abbreviation,
-    updated: result.Info.Character.Updated
+    updated: result.Character.ParseDate
   };
 }
 
@@ -69,10 +70,11 @@ function getAvgILevel (o: Record<string, XIVAPI_ItemDetails>): number {
   return Math.floor(Object.values(o).reduce((s, {Name, LevelItem}) => s + (Name.startsWith('Soul') ? 0 : LevelItem), 0) / (Object.values(o).length - 1));
 }
 
-const getGear: Action = {
+const getGear: Action<{message: Discord.Message | Discord.Message[], character: any}> = {
   perform: async (_db, {command, data: {server, name}}, msg) => {
-    console.info('performing new get gear action', command);
+    console.info('performing new get gear action', command, server, name);
     const character = await getCharacter(server, name);
+    console.info('get_gear', 'character');
     const {gear, job, updated} = await getCharacterDetails(character.ID);
     const mapped = await getItems(gear);
     const reorderedGear = reorderGear(mapped);
@@ -92,15 +94,19 @@ const getGear: Action = {
         exampleEmbed.addField(key, value, true);
       }
     });
-    console.info('character_result', JSON.stringify({
+    const characterResult = {
       character,
       ilvl: avgILevel,
       gear: reorderedGear,
       job,
       updated
-    }));
-    await msg.channel.send(exampleEmbed);
+    };
+    const message = await msg.channel.send(exampleEmbed);
     console.info('result_sent');
+    return {
+      message,
+      character: characterResult
+    };
   },
   command: 'gear',
   parseMessage: function (prefix, {content}) {

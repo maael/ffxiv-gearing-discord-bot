@@ -5,11 +5,14 @@ import addTeam from './addTeam';
 import getGear from './getGear';
 import listTeams from './listTeams';
 import marketPrice from './marketPrice';
+import addToTeam from './addToTeam';
+import listTeamMembers from './listTeamMembers';
+import displayTeamMembers from './displayTeamMembers';
 import {getEmoji} from '../util';
 
-const PREFIX = '!ffgear';
+const PREFIX = '!ffdev';
 
-function composeAction (action: Action) {
+function composeAction (action: Action<any>) {
   return async (db: Database, message: Message) => {
     const parsedArgs = action.parseMessage(PREFIX, message);
     return action.perform(db, parsedArgs, message);
@@ -20,7 +23,10 @@ export const actionMap = {
   [addTeam.command]: composeAction(addTeam),
   [getGear.command]: composeAction(getGear),
   [listTeams.command]: composeAction(listTeams),
-  [marketPrice.command]: composeAction(marketPrice)
+  [marketPrice.command]: composeAction(marketPrice),
+  [addToTeam.command]: composeAction(addToTeam),
+  [listTeamMembers.command]: composeAction(listTeamMembers),
+  [displayTeamMembers.command]: composeAction(displayTeamMembers)
 }
 
 export default async (db: Database, client: Client, message: Message) => {
