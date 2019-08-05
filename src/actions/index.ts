@@ -11,11 +11,11 @@ import displayTeamMembers from './displayTeamMembers';
 import info from './info';
 import {getEmoji} from '../util';
 
-const PREFIX = '!ffgear';
+const {CMD_PREFIX = '!ffgear'} = process.env;
 
 function composeAction (action: Action<any>) {
   return async (db: Database, message: Message) => {
-    const parsedArgs = action.parseMessage(PREFIX, message);
+    const parsedArgs = action.parseMessage(CMD_PREFIX, message);
     return action.perform(db, parsedArgs, message);
   }
 }
@@ -32,11 +32,11 @@ export const actionMap = {
 }
 
 export default async (db: Database, client: Client, message: Message) => {
-  if (!message.content.startsWith(PREFIX)) return;
+  if (!message.content.startsWith(CMD_PREFIX)) return;
   const reaction = await message.react('🤔');
   try {
     const match = Object.entries(actionMap).find(([cmd]) =>  (
-      message.content.startsWith(`${PREFIX} ${cmd} `) || message.content === `${PREFIX} ${cmd}`
+      message.content.startsWith(`${CMD_PREFIX} ${cmd} `) || message.content === `${CMD_PREFIX} ${cmd}`
     ));
     if (match) {
       const [cmd, act] = match;

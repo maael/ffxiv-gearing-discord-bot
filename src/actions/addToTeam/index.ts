@@ -1,11 +1,16 @@
 import SQL from 'sql-template-strings';
+import { TextChannel } from 'discord.js';
 import getGear from '../getGear';
 import {Action} from '../../types';
 
 const addToTeam: Action = {
   perform: async (db, command, msg) => {
     console.info('performing add team action', command);
-    const results = await db.all(SQL`SELECT * FROM ServerTeam WHERE name = ${command.data.teamName}`);
+    if (!(msg.channel instanceof TextChannel)) {
+      await msg.channel.send(`Command must be done in a Text Channel!`);
+      return;
+    }
+    const results = await db.all(SQL`SELECT * FROM ServerTeam WHERE name = ${command.data.teamName} AND discord_server = ${msg.channel.guild.id}`);
     if (results.length) {
       const {character} = await getGear.perform(db, {command: getGear.command, data: {server: command.data.server, name: command.data.name}}, msg);
       await db.run(SQL`
