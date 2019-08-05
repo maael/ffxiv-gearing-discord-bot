@@ -1,6 +1,9 @@
 import SQL from 'sql-template-strings';
+import throat from 'throat';
 import getGear from '../getGear';
 import {Action} from '../../types';
+
+const limiter = throat(1);
 
 const DisplayTeamMembers: Action = {
   perform: async (db, command, msg) => {
@@ -8,9 +11,10 @@ const DisplayTeamMembers: Action = {
     const results = await db.all(SQL`SELECT * FROM ServerTeam WHERE name = ${command.data.teamName}`);
     if (results.length) {
       const members = await db.all(SQL`SELECT * FROM TeamMember WHERE server_team_id = ${results[0].id}`);
-      await Promise.all(members.map(({ffxiv_server, ffxiv_character}) => (
-        getGear.perform(db, {command: getGear.command, data: {server: ffxiv_server, name: ffxiv_character}}, msg)
-      )));
+      members.map(({ffxiv_server, ffxiv_character}) => (
+        limiter(() => getGear.perform(db, {command: getGear.command, data: {server: ffxiv_server, name: ffxiv_character}}, msg))
+      ));
+      await limiter;
     } else {
       await msg.channel.send(`No team '${command.data.teamName}' exists!`);
     }

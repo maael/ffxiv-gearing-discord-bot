@@ -15,7 +15,8 @@
     "got": "^9.6.0",
     "sql-template-strings": "^2.2.2",
     "sqlite": "^3.0.3",
-    "string-pixel-width": "^1.10.0"
+    "string-pixel-width": "^1.10.0",
+    "throat": "^5.0.0"
   },
   "devDependencies": {
     "@types/got": "^9.6.5",
