@@ -8,9 +8,10 @@ import marketPrice from './marketPrice';
 import addToTeam from './addToTeam';
 import listTeamMembers from './listTeamMembers';
 import displayTeamMembers from './displayTeamMembers';
+import info from './info';
 import {getEmoji} from '../util';
 
-const PREFIX = '!ffdev';
+const PREFIX = '!ffgear';
 
 function composeAction (action: Action<any>) {
   return async (db: Database, message: Message) => {
@@ -26,7 +27,8 @@ export const actionMap = {
   [marketPrice.command]: composeAction(marketPrice),
   [addToTeam.command]: composeAction(addToTeam),
   [listTeamMembers.command]: composeAction(listTeamMembers),
-  [displayTeamMembers.command]: composeAction(displayTeamMembers)
+  [displayTeamMembers.command]: composeAction(displayTeamMembers),
+  [info.command]: composeAction(info),
 }
 
 export default async (db: Database, client: Client, message: Message) => {
