@@ -2,7 +2,7 @@ import {Action} from '../../types';
 
 const info: Action = {
   perform: async (_db, _command, msg) => {
-    await msg.channel.send(`Info:\n  - Version: Kweh1.1`);
+    await msg.channel.send(`Info:\n  - Version: Kweh1.2`);
   },
   command: 'info',
   parseMessage: function () {
