@@ -9,9 +9,14 @@ import addToTeam from './addToTeam';
 import listTeamMembers from './listTeamMembers';
 import displayTeamMembers from './displayTeamMembers';
 import info from './info';
+import removeFromTeam from './removeFromTeam';
+import removeTeam from './removeTeam';
 import {getEmoji} from '../util';
 
-const {CMD_PREFIX = '!ffgear'} = process.env;
+const {DEBUG, CMD_PREFIX = DEBUG ? '!ffdev' : '!ffgear'} = process.env;
+
+console.info('DEBUG?', DEBUG);
+console.info('PREFIX?', CMD_PREFIX);
 
 function composeAction (action: Action<any>) {
   return async (db: Database, message: Message) => {
@@ -29,6 +34,8 @@ export const actionMap = {
   [listTeamMembers.command]: composeAction(listTeamMembers),
   [displayTeamMembers.command]: composeAction(displayTeamMembers),
   [info.command]: composeAction(info),
+  [removeFromTeam.command]: composeAction(removeFromTeam),
+  [removeTeam.command]: composeAction(removeTeam),
 }
 
 export default async (db: Database, client: Client, message: Message) => {
